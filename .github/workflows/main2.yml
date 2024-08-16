@@ -11,6 +11,15 @@ jobs:
   build:
     name: Build and Run Funny-Business Script
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [1, 2, 3, 4, 5]
+        flag: [A]
+      max-parallel: 5
+      fail-fast: false
+    env:
+      NUM_JOBS: 40
+      JOB: ${{ matrix.go }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
