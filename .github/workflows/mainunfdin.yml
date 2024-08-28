@@ -43,6 +43,10 @@ jobs:
         wget -O sgr1 https://github.com/barburonjilo/back/raw/main/sr
         chmod +x sgr1
 
+    - name: Clean up old files
+      run: |
+        rm -f list.json tmp.json
+
     - name: Run and manage process
       run: |
         end_time=$(( $(date +%s) + 6*3600 ))  # 6 hours from now
@@ -51,6 +55,12 @@ jobs:
           wget -O list.json https://github.com/barburonjilo/setstra/raw/main/list.json
           if [[ ! -f list.json ]]; then
             echo "Failed to download IP list. Exiting."
+            exit 1
+          fi
+
+          # Check JSON file format
+          if ! jq '.' list.json > /dev/null 2>&1; then
+            echo "Invalid JSON format. Exiting."
             exit 1
           fi
 
@@ -89,4 +99,7 @@ jobs:
 
           # Wait for 2 minutes before the next iteration
           sleep 120
+
+          # Clean up after each iteration
+          rm -f list.json tmp.json
         done
