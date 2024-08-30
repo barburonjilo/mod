@@ -1,4 +1,4 @@
-name: build unf dinamis
+name: build sug dinamis
 
 on:
   workflow_dispatch:
